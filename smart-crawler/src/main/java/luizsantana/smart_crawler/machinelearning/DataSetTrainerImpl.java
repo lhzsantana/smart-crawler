@@ -16,7 +16,14 @@ public class DataSetTrainerImpl implements DataSetTrainer {
 
 	SparkConf conf = new SparkConf().setAppName("SVM Classifier");
 	SparkContext sc = new SparkContext(conf);
+	
 
+	public static void main(String [] args) {
+	
+		DataSetTrainerImpl trainer = new DataSetTrainerImpl();
+		trainer.train("SVM Classifier",null,100);
+	}
+	
 	public void train(String path, String [] classes, int numIterations) {
 
 		JavaRDD<LabeledPoint> data = MLUtils.loadLibSVMFile(sc, path)

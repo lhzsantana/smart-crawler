@@ -24,9 +24,14 @@ public class Utils {
 	private int indexBulkSize;
 	private String indexAddress;	
 	private String indexPort;	
-	private String indexType;
+	private String indexName;
+	
+	private String counterAddress;
+	private String counterPort;
+	private String counterKeySpace;
 	
 	private String trainingData;
+	private String crawledData;
 
 	private boolean sendToIndex;
 	
@@ -50,14 +55,20 @@ public class Utils {
 		this.setClasses(classes);
 		this.seeds=localSeeds;
 		this.path="~";
+
+		this.indexAddress="127.0.0.1";
+		this.indexPort="9300";
+		this.indexName="crawler1";
+		this.cluster="elasticsearch";
 		
-		this.sendToIndex=false;
+		this.sendToIndex=true;
 		this.findNamedEntities=false;
 		
-		this.indexBulkSize=100;
-		this.numberOfCrawlers=100;
+		this.indexBulkSize=1;
+		this.numberOfCrawlers=1000;
 		
-		this.trainingData="/trainingData.txt";
+		this.trainingData="trainingData.txt";
+		this.crawledData="crawledData.txt";
 		
 	}
 
@@ -117,14 +128,6 @@ public class Utils {
 		this.indexPort = indexPort;
 	}
 
-	public String getIndexType() {
-		return indexType;
-	}
-
-	public void setIndexType(String indexType) {
-		this.indexType = indexType;
-	}
-
 	public String getCluster() {
 		return cluster;
 	}
@@ -164,4 +167,45 @@ public class Utils {
 	public void setTrainingData(String trainingData) {
 		this.trainingData = trainingData;
 	}
+
+	public String getCrawledData() {
+		return crawledData;
+	}
+
+	public void setCrawledData(String crawledData) {
+		this.crawledData = crawledData;
+	}
+
+	public String getIndexName() {
+		return indexName;
+	}
+
+	public void setIndexName(String indexName) {
+		this.indexName = indexName;
+	}
+
+	public String getCounterAddress() {
+		return counterAddress;
+	}
+
+	public void setCounterAddress(String counterAddress) {
+		this.counterAddress = counterAddress;
+	}
+
+	public String getCounterPort() {
+		return counterPort;
+	}
+
+	public void setCounterPort(String counterPort) {
+		this.counterPort = counterPort;
+	}
+
+	public String getCounterKeySpace() {
+		return counterKeySpace;
+	}
+
+	public void setCounterKeySpace(String counterKeySpace) {
+		this.counterKeySpace = counterKeySpace;
+	}
+
 }

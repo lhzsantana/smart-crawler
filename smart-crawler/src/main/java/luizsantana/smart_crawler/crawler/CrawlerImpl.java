@@ -19,10 +19,19 @@ public class CrawlerImpl implements Crawler{
 	private String[] seeds;	
 	private String folder;
 	private int numberOfCrawlers;
+
+	public void configCrawler(String[] seeds, String folder,
+			int numberOfCrawlers) {
+		this.seeds=seeds;
+		this.folder=folder;
+		this.numberOfCrawlers=numberOfCrawlers;
+    	logger.info("Setting seeds "+seeds);		
+	}
 		
 	public void crawl() throws Exception{
 
     	logger.info("Starting crawling");
+    	
 
 		CrawlConfig config = new CrawlConfig();
 
@@ -32,7 +41,7 @@ public class CrawlerImpl implements Crawler{
 		 * Be polite: Make sure that we don't send more than 1 request per
 		 * second (1000 milliseconds between requests).
 		 */
-		config.setPolitenessDelay(10000);
+		config.setPolitenessDelay(1000);
 
 		/*
 		 * You can set the maximum crawl depth here. The default value is -1 for
@@ -44,7 +53,7 @@ public class CrawlerImpl implements Crawler{
 		 * You can set the maximum number of pages to crawl. The default value
 		 * is -1 for unlimited number of pages
 		 */
-		config.setMaxPagesToFetch(1000);
+		config.setMaxPagesToFetch(-1);
 
 		/**
 		 * Do you want crawler4j to crawl also binary data ? example: the
@@ -98,11 +107,4 @@ public class CrawlerImpl implements Crawler{
     	logger.info("Fishing crawling");
 	}
 
-	public void configCrawler(String[] seeds, String folder,
-			int numberOfCrawlers) {
-		this.seeds=seeds;
-		this.folder=folder;
-		this.numberOfCrawlers=numberOfCrawlers;
-    	logger.info("Setting seeds "+seeds);		
-	}
 }
