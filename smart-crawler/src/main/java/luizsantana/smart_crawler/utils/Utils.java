@@ -50,7 +50,7 @@ public class Utils {
 		logger.debug("Reading properties");
 		
 		String [] classes={"negócios", "esportes", "carros"};
-		String [] localSeeds={"http://www.globo.com", "http://www.exame.com.br", "http://www.valoreconomico.com.br"};
+		String [] localSeeds={"http://www.infomoney.com.br", "http://www.globo.com", "http://www.exame.com.br", "http://www.valoreconomico.com.br"};
 		
 		this.setClasses(classes);
 		this.seeds=localSeeds;
@@ -65,7 +65,7 @@ public class Utils {
 		this.findNamedEntities=false;
 		
 		this.indexBulkSize=1;
-		this.numberOfCrawlers=1000;
+		this.numberOfCrawlers=10;
 		
 		this.trainingData="trainingData.txt";
 		this.crawledData="crawledData.txt";

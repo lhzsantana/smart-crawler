@@ -22,25 +22,27 @@ public class CrawlerIndexer extends BulkIndexer{
         		.field("html", html)
         		.endObject();
 		
-		this.index(Crawler.indexTypeRawPage, namedEntity, false);
+		this.index(Crawler.indexTypeRawPage, namedEntity, url, false);
 	}
-
 	public void indexClassifiedPage(String url, String page, String domain, String html, String classification) throws ElasticsearchException, Exception{
 
 		XContentBuilder namedEntity = jsonBuilder()
         		.startObject()
         		.startObject();
 		
-		this.index(Crawler.indexTypeRawPage, namedEntity, false);
+		//this.index(Crawler.indexTypeRawPage, namedEntity, url, false);
 	}
 	
 	public void indexNamedEntity(String name, String type) throws ElasticsearchException, Exception{
 		
 		XContentBuilder namedEntity = jsonBuilder()
         		.startObject()
-        		.startObject();
+        		.field("name", name)
+        		.field("type", type)
+        		.endObject();
 		
-		this.index(Crawler.indexTypeRawPage, namedEntity, false);
+		
+		//this.index(Crawler.indexTypeNamedEntity, namedEntity, false);
 	}
 
 }

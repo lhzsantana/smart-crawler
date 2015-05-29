@@ -40,11 +40,11 @@ public class Start {
 		
 		crawl();
 		
-		DataSetTrainer dataSetTrainer = new DataSetTrainerImpl();
+		/*DataSetTrainer dataSetTrainer = new DataSetTrainerImpl();
 
 		dataSetTrainer.train(utils.getPath(), utils.getClasses(), utils.getNumIterations());
 
-		logger.info("Finishing crawling for training");
+		logger.info("Finishing crawling for training");*/
 	}
 	
 	private static void crawl(){

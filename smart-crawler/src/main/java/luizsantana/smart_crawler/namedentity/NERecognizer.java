@@ -16,8 +16,10 @@ public class NERecognizer {
 
 	public NERecognizer() {
 
-		String serializedClassifier = "classifiers/english.all.3class.distsim.crf.ser.gz";
-
+		//String serializedClassifier = "classifiers/english.all.3class.distsim.crf.ser.gz";
+		String serializedClassifier = "classifiers/english.all.3class.caseless.distsim.crf.ser.gz";
+		
+		
 		try {
 			classifier = CRFClassifier.getClassifier(serializedClassifier);
 		} catch (ClassCastException e) {

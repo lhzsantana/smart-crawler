@@ -12,7 +12,7 @@ import edu.uci.ics.crawler4j.parser.HtmlParseData;
 
 public class GenericCrawler extends WebCrawler {
 
-	private static NERecognizer recognizer = new NERecognizer();
+	//private static NERecognizer recognizer = new NERecognizer();
 	private static Utils utils = Utils.getInstance();
 	private static CrawlerIndexer indexer = new CrawlerIndexer();
 
@@ -27,6 +27,7 @@ public class GenericCrawler extends WebCrawler {
 			String text = htmlParseData.getText();
 			String html = htmlParseData.getHtml();
 
+			/*
 			if (utils.isFindNamedEntities()) {
 
 				try {
@@ -39,11 +40,11 @@ public class GenericCrawler extends WebCrawler {
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-			}
+			}*/
 
 			if (utils.isSendToIndex()) {
 				try {
-					logger.info(text);
+					logger.debug(text);
 					indexer.indexRawPage(url, text, domain, html);
 				} catch (Exception e) {
 					logger.error("Page not indexed",e);
