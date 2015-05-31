@@ -25,10 +25,37 @@
 					<target>1.8</target>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.4</version>
+				<configuration>
+					<archive>
+						<manifest>
+							<mainClass>info.trintaetres.smart_crawler.Start</mainClass>
+						</manifest>
+					</archive>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 
 	<dependencies>
+		<dependency>
+			<groupId>net.sourceforge.htmlunit</groupId>
+			<artifactId>htmlunit</artifactId>
+			<version>2.16</version>
+		</dependency>
+		<dependency>
+			<groupId>org.jsoup</groupId>
+			<artifactId>jsoup</artifactId>
+			<version>1.7.2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.twitter4j</groupId>
+			<artifactId>twitter4j-stream</artifactId>
+			<version>4.0.3</version>
+		</dependency>
 		<dependency>
 			<groupId>edu.uci.ics</groupId>
 			<artifactId>crawler4j</artifactId>
