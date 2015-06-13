@@ -3,8 +3,6 @@ package info.trintaetres.smart_crawler;
 import info.trintaetres.smart_crawler.crawler.Crawler;
 import info.trintaetres.smart_crawler.crawler.CrawlerImpl;
 import info.trintaetres.smart_crawler.indexer.GeneralElasticsearch;
-import info.trintaetres.smart_crawler.machinelearning.DataSetTrainer;
-import info.trintaetres.smart_crawler.machinelearning.naivebayes.NaiveBayesImpl;
 import info.trintaetres.smart_crawler.utils.Utils;
 
 import org.slf4j.Logger;

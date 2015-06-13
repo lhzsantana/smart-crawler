@@ -32,9 +32,10 @@ public class SVMImpl  implements Serializable {
 	public void startClassficication(String [] model){
 
 		conf = new SparkConf().setAppName("SVM Classifier")
-				.setMaster("spark://luiz-System-Product-Name:7077")
-				.setJars(new String[]{"target/smart-crawler-0.0.1-SNAPSHOT.jar"})
-				.set("spark.akka.frameSize", "20");
+				.setMaster("spark://ip-172-31-46-48:7077")
+				.setJars(new String[]{"/tmp/smart-crawler/smart-crawler/target/smart-crawler-0.0.1-SNAPSHOT.jar"})
+				.set("spark.akka.frameSize", "20")
+				.set("spark.akka.heartbeat.interval", "1000");
 		
 		sc = new JavaSparkContext(conf);
 	}
