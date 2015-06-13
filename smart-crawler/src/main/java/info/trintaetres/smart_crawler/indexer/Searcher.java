@@ -1,10 +1,11 @@
 package info.trintaetres.smart_crawler.indexer;
 
-import info.trintaetres.smart_crawler.machinelearning.naivebayes.NaiveBayesImpl;
 import info.trintaetres.smart_crawler.utils.Utils;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.elasticsearch.ElasticsearchException;
@@ -24,6 +25,74 @@ public class Searcher {
 	private static final Logger logger = LoggerFactory.getLogger(Searcher.class);
 
 	private static Utils utils = Utils.getInstance();
+		
+	
+	public Set<SearchHit> getAll() throws ElasticsearchException, Exception{
+
+		int tries=0;
+		
+		do{
+			try{
+				
+				String [] pageTypes={"Imóveis","Carreira","Minhas finanças","Onde investir"};
+
+				Set<SearchHit> allHits = new HashSet<SearchHit>(); 
+				
+				for(String value:pageTypes){
+					Set<SearchHit> partialHits=getFromField("originalCategory", value, 0, 2000);
+					
+					allHits.addAll(partialHits);
+				}				
+				
+				return allHits;
+
+			}catch(Exception e){
+				logger.error("Error while connecting to Elasticsearch",e);
+			}
+			
+			tries++;
+		}while(tries<10000);
+	
+		return null;
+	}
+	
+	
+	public List<String> getFromField(String field, String value) throws ElasticsearchException, Exception{
+		
+		int tries=0;
+		
+		do{
+			try{
+						
+				Set<SearchHit> hits=getFromField(field, value, 0, 2000);
+				
+				List<String> texts= new ArrayList<String>();
+				
+				for(SearchHit hit:hits){
+				
+					texts.add(hit.getSource().get("puretext").toString());
+				}
+				
+				return texts;
+				
+			}catch(Exception e){
+				logger.error("Error while connecting to Elasticsearch",e);
+			}
+			
+			tries++;
+		}while(tries<10000);
+		
+		return null;
+	}
+
+	public Set<SearchHit> getFromField(String field, String value, int from, int size) throws ElasticsearchException, Exception {
+
+		logger.info("Getting data for the field "+field+" with value "+value);
+		
+		MatchQueryBuilder qb = QueryBuilders.matchQuery(field, value);
+		
+		return query(qb, from, size);		
+	}
 
 	public Set<SearchHit> getFromDomain(String domain, int from, int size) throws ElasticsearchException, Exception {
 

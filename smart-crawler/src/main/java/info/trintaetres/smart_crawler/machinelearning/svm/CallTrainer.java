@@ -20,29 +20,6 @@ public class CallTrainer {
 	private static final Logger logger = LoggerFactory
 			.getLogger(CallTrainer.class);
 
-	public static void main(String[] args) {
-
-		CallTrainer caller = new CallTrainer();
-
-		List<LabeledPoint> trainList = new ArrayList<LabeledPoint>();
-
-		// 0 for Music
-		trainList.addAll(caller.createDataSet("musica.com.br", 0d, 0, 50));
-		// 1 for Finance
-		trainList.addAll(caller.createDataSet("infomoney.com.br", 1d, 0, 50));
-
-		List<LabeledPoint> testList = new ArrayList<LabeledPoint>();
-
-		// 0 for Music
-		trainList.addAll(caller.createDataSet("musica.com.br", 0d, 50, 50));
-		// 1 for Finance
-		trainList.addAll(caller.createDataSet("valor.com.br", 1d, 50, 50));
-		
-		SVMImpl trainer = new SVMImpl();
-		trainer.train(trainList, testList);
-
-	}
-
 	public List<LabeledPoint> createDataSet(String domain,
 			Double classification, int from, int sampleSize) {
 

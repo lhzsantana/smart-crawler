@@ -66,10 +66,13 @@ public class Utils {
 
 		logger.debug("Reading properties");
 		
+		
+		
 		String [] classes={"negócios", "esportes", "carros"};
-		String [] localSeeds={"http://quatrorodas.abril.com.br/","www.infomoney.com.br","http://globoesporte.com/"};
-		//String [] localSeeds={"http://quatrorodas.abril.com.br/","http://www.cacb.org.br","http://pt.wikipedia.org/wiki/Lista_de_jornais_do_Brasil", "http://www.infomoney.com.br", "http://www.globo.com", "http://www.exame.com.br", "http://www.valoreconomico.com.br"};
+		//String [] localSeeds={"http://quatrorodas.abril.com.br/","http://www.infomoney.com.br","http://globoesporte.com/"};
+		//String [] localSeeds={"http://www.globo.com/","http://quatrorodas.abril.com.br/","http://www.cacb.org.br","http://pt.wikipedia.org/wiki/Lista_de_jornais_do_Brasil", "http://www.infomoney.com.br", "http://www.globo.com", "http://www.exame.com.br", "http://www.valoreconomico.com.br"};
 		//String [] localSeeds={"http://pt.wikipedia.org/wiki/Lista_de_jornais_do_Brasil"};
+		String [] localSeeds={"http://www.infomoney.com.br"};
 		
 		this.indexBlockedDomains=new HashSet<String>();
 		indexBlockedDomains.add("wikipedia.org");
@@ -81,9 +84,11 @@ public class Utils {
 		this.seeds=localSeeds;
 		this.path="~";
 
-		this.indexAddress="127.0.0.1";
+		//this.indexAddress="127.0.0.1";
+		this.indexAddress="52.5.51.194";
+		
 		this.indexPort="9300";
-		this.indexName="crawler1";
+		this.indexName="crawler-infomoney";
 		this.cluster="elasticsearch";
 		
 		this.sendToIndex=true;

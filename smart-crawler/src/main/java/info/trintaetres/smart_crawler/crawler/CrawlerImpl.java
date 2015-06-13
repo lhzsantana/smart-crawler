@@ -9,9 +9,6 @@ import edu.uci.ics.crawler4j.fetcher.PageFetcher;
 import edu.uci.ics.crawler4j.robotstxt.RobotstxtConfig;
 import edu.uci.ics.crawler4j.robotstxt.RobotstxtServer;
 
-/*
- * 
- */
 public class CrawlerImpl implements Crawler{
 
 	private static final Logger logger = LoggerFactory.getLogger(CrawlerImpl.class);
@@ -32,7 +29,6 @@ public class CrawlerImpl implements Crawler{
 
     	logger.info("Starting crawling");
     	
-
 		CrawlConfig config = new CrawlConfig();
 
 		config.setCrawlStorageFolder(folder);

@@ -38,7 +38,7 @@ public class GeneralElasticsearch {
 							.getIndexAddress(), Integer.parseInt(utils
 							.getIndexPort())));
 		}
-
+		
 		return client;
 	}
 
@@ -76,7 +76,20 @@ public class GeneralElasticsearch {
 					.field("enabled", "true")
 				.endObject()
 				.startObject("properties")
-				.startObject("url").field("type", "string").endObject()
+				.startObject("url").field("type", "string").endObject()				
+				.startObject("originalCategory")
+					.field("type", "string")
+					.startObject("fields")					
+						.startObject("raw")
+							.field("type", "string")
+							.field("index", "not_analyzed")
+						.endObject()		
+						.startObject("brazilian")
+							.field("type", "string")
+							.field("analyzer", "brazilian")
+					.endObject()
+					.endObject()
+				.endObject()
 				.startObject("text")
 					.field("type", "string")
 					.startObject("fields")					

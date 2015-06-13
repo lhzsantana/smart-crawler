@@ -1,6 +1,7 @@
 package info.trintaetres.smart_crawler.machinelearning.svm;
 
 import info.trintaetres.smart_crawler.indexer.Searcher;
+import info.trintaetres.smart_crawler.machinelearning.GenericML;
 import info.trintaetres.smart_crawler.words.TextPreparer;
 
 import java.util.Arrays;
@@ -14,25 +15,36 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-public class CallModel {
+public class CallModel extends GenericML{
 
 	private static final Logger logger = LoggerFactory
 			.getLogger(CallModel.class);
 	
+	private SVMImpl classifier = null;
+	private static String [] models={"",""};
+	private static HashingTF tf = new HashingTF();
+	
+	
 	public static void main(String[] args) throws ElasticsearchException, Exception {
 	
-		SVMImpl classifier = new SVMImpl();
+		SVMImpl classifier = new SVMImpl();		
 		
-		String [] models={"",""};
+		//classifier.startClassficication(models);		
+	}
+	
+	public void basicClassification(String text){
+
+		Vector vector = tf.transform(Arrays.asList(text.split(" ")));
 		
-		classifier.startClassficication(models);
+		//String result = classifier.vote(models, vector);
+	}
+	
+	public void callIndexer() throws ElasticsearchException, Exception{
 		
 		Searcher searcher = new Searcher();
-
+		
 		Set<SearchHit> values = searcher.getFromDomain("globo.com", 0, 10000);
 
-		HashingTF tf = new HashingTF();
-		
 		for (SearchHit value : values) {
 
 			String text = TextPreparer.prepare(value.getSource()
@@ -42,10 +54,10 @@ public class CallModel {
 
 			Vector vector = tf.transform(Arrays.asList(text.split(" ")));
 			
-			String result = classifier.vote(models, vector);
+			//String result = classifier.vote(models, vector);
 			
-			logger.info("The class of a document of the domain "+domain+" is "+result);
-		}		
+			//logger.info("The class of a document of the domain "+domain+" is "+result);
+		}	
 	}
 	
 

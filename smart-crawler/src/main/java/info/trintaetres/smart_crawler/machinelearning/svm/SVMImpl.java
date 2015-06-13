@@ -1,13 +1,15 @@
 package info.trintaetres.smart_crawler.machinelearning.svm;
 
-import java.io.Serializable;
-import java.util.List;
+import info.trintaetres.smart_crawler.machinelearning.GenericML;
 
-import org.apache.spark.SparkConf;
+import java.io.Serializable;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.spark.api.java.JavaRDD;
-import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.api.java.function.Function;
-import org.apache.spark.mllib.classification.NaiveBayesModel;
 import org.apache.spark.mllib.classification.SVMModel;
 import org.apache.spark.mllib.classification.SVMWithSGD;
 import org.apache.spark.mllib.evaluation.BinaryClassificationMetrics;
@@ -18,88 +20,134 @@ import org.slf4j.LoggerFactory;
 
 import scala.Tuple2;
 
-public class SVMImpl  implements Serializable {
-	
+public class SVMImpl extends GenericML implements Serializable {
+
 	private static final long serialVersionUID = 5209690473689123129L;
 
-	private static final Logger logger = LoggerFactory
-			.getLogger(SVMImpl.class);
-	
-	private static SparkConf conf;
-	private static JavaSparkContext sc;
-	private static NaiveBayesModel savedModel;
-	
-	public void startClassficication(String [] model){
+	private static final Logger logger = LoggerFactory.getLogger(SVMImpl.class);
 
-		conf = new SparkConf().setAppName("SVM Classifier")
-				.setMaster("spark://luiz-System-Product-Name:7077")
-				.setJars(new String[]{"target/smart-crawler-0.0.1-SNAPSHOT.jar"})
-				.set("spark.akka.frameSize", "20");
+	public double predictOneToOne(Vector data, String modelPath) {
+
+		logger.info("Starting one to one SVM exec");
 		
-		sc = new JavaSparkContext(conf);
+		SVMModel current = SVMModel.load(sc.sc(), modelPath);
+		
+		logger.info("Finishing one to one SVM exec");
+				
+		return current.predict(data);
 	}
-		
-	public String vote(String [] models, Vector testData){
-		
-		NaiveBayesModel current;
-		
-		for(String model:models){
 
-			current = NaiveBayesModel.load(sc.sc(), model);
-			current.predict(testData);
+	public String predictOneVsAll(List<Model> models, Vector data) {
+
+		logger.info("Starting one versus all SVM exec");
+		
+		SVMModel current;
+		
+		Map<String,Integer> votes = new HashMap<String,Integer>();
+
+		for (Model model : models) {
+			
+			current = SVMModel.load(sc.sc(), model.getModelPath());
+			double prediction=current.predict(data);
+	
+			if(prediction>0){				
+				Integer currentVotes=votes.get(model.getClass1());
+				if(currentVotes==null) currentVotes=0; 
+				votes.put(model.getClass1(), ++currentVotes);
+			}else{
+				Integer currentVotes=votes.get(model.getClass0());
+				if(currentVotes==null) currentVotes=0;
+				votes.put(model.getClass0(), ++currentVotes);
+			}
+
+			logger.info("Prediction to model "+model.getModelPath()+" is "+prediction);
+		
 		}
+
+		logger.info("Finishing one versus all SVM exec");		
+
+		Integer maxVotes=0;
+		String maxClass="";
+		for(String model:votes.keySet()){
+			
+			if(votes.get(model)>maxVotes){
+				maxVotes=votes.get(model);
+				maxClass=model;
+			}			
+			logger.info(model+" have "+votes.get(model)+" votes");
+		}		
 		
-		return null;
+		return maxClass;
 	}
 	
-	public void train(List<LabeledPoint> trainList, List<LabeledPoint> testList) {
+	public void train(List<LabeledPoint> trainList, List<LabeledPoint> testList, String modelPath) {
 
-		SparkConf conf = new SparkConf().setAppName("SVM Classifier")
-				.setMaster("spark://luiz-System-Product-Name:7077")
-				.setJars(new String[]{"target/smart-crawler-0.0.1-SNAPSHOT.jar"})
-				.set("spark.akka.frameSize", "40");
+		logger.info("Starting train");
+
+		logger.info("Number of labeled train points "+trainList.size());
+		logger.info("Number of labeled test points "+testList.size());
+				
+		JavaRDD<LabeledPoint> training = sc.parallelize(trainList).cache();
+		JavaRDD<LabeledPoint> test = sc.parallelize(testList).cache();
+
+		logger.info("Size of training dataset"+training.count());
 		
-		JavaSparkContext sc = new JavaSparkContext(conf);
+		logger.info("Run training algorithm to build the model");	
+		int numIterations = 200;
+				
+		final SVMModel model = SVMWithSGD.train(training.rdd(), numIterations);
 
-		JavaRDD<LabeledPoint> training = sc.parallelize(trainList, 2).cache();
-		JavaRDD<LabeledPoint> test = sc.parallelize(testList, 2).cache();
+		logger.info("Clear the default threshold");		
+		model.clearThreshold();
 
-	    // Run training algorithm to build the model.
-	    int numIterations = 100;
-	    final SVMModel model = SVMWithSGD.train(training.rdd(), numIterations);
+		/*
+		logger.info("Compute raw scores on the test set");
+		try{
+			
+			JavaRDD<Tuple2<Object, Object>> scoreAndLabels = test
+					.map(new Function<LabeledPoint, Tuple2<Object, Object>>() {
+	
+						private static final long serialVersionUID = -2386041653117582576L;
+	
+						public Tuple2<Object, Object> call(LabeledPoint p) {
+							Double score = model.predict(p.features());
+							return new Tuple2<Object, Object>(score, p.label());
+						}
+					});
+			logger.info("Getting metrics ");
+			BinaryClassificationMetrics metrics = new BinaryClassificationMetrics(
+					JavaRDD.toRDD(scoreAndLabels));
+			
+			double auROC = metrics.areaUnderROC();
+			logger.info("Area under ROC = " + auROC);		
+		
+		}catch(Exception e){
+			logger.error("Error while calculating ROC",e);
+		}
+		*/
+		
+		logger.info("Saving the model");
+		model.save(sc.sc(), modelPath);
 
-	    // Clear the default threshold.
-	    model.clearThreshold();
-
-	    // Compute raw scores on the test set.
-	    JavaRDD<Tuple2<Object, Object>> scoreAndLabels = test.map(
-	      new Function<LabeledPoint, Tuple2<Object, Object>>() {
-	    	  
-			private static final long serialVersionUID = -2386041653117582576L;
-
-			public Tuple2<Object, Object> call(LabeledPoint p) {
-	          Double score = model.predict(p.features());
-	          return new Tuple2<Object, Object>(score, p.label());
-	        }
-	      }
-	    );
-
-	    // Get evaluation metrics.
-	    BinaryClassificationMetrics metrics =
-	      new BinaryClassificationMetrics(JavaRDD.toRDD(scoreAndLabels));
-	    double auROC = metrics.areaUnderROC();
-
-	    System.out.println("Area under ROC = " + auROC);
-
-	    // Save and load model
-	    model.save(sc.sc(), "myModelPath");
-	    SVMModel sameModel = SVMModel.load(sc.sc(), "myModelPath");
-	    
-		sc.close();
+		logger.info("Finishing train");
 	}
 	
-	public double classify(Vector testData){
-		
-		return savedModel.predict(testData);
+
+	class ValueComparator implements Comparator<String> {
+
+	    Map<String, Integer> base;
+	    public ValueComparator(Map<String, Integer> base) {
+	        this.base = base;
+	    }
+
+	    // Note: this comparator imposes orderings that are inconsistent with equals.    
+	    public int compare(String a, String b) {
+	        if (base.get(a) >= base.get(b)) {
+	            return -1;
+	        } else {
+	            return 1;
+	        } // returning 0 would merge keys
+	    }
 	}
+
 }

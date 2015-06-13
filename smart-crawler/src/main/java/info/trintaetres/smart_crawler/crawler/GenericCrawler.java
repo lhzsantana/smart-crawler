@@ -1,12 +1,8 @@
 package info.trintaetres.smart_crawler.crawler;
 
 import info.trintaetres.smart_crawler.indexer.CrawlerIndexer;
-import info.trintaetres.smart_crawler.namedentity.NERecognizer;
-import info.trintaetres.smart_crawler.namedentity.Pair;
+import info.trintaetres.smart_crawler.parsers.Infomoney;
 import info.trintaetres.smart_crawler.utils.Utils;
-
-import java.util.List;
-
 import edu.uci.ics.crawler4j.crawler.Page;
 import edu.uci.ics.crawler4j.crawler.WebCrawler;
 import edu.uci.ics.crawler4j.parser.HtmlParseData;
@@ -18,6 +14,7 @@ public class GenericCrawler extends WebCrawler {
 	private static CrawlerIndexer indexer = new CrawlerIndexer();
 
 	public void visit(Page page) {
+		logger.debug("Visiting page ", page.getWebURL());
 
 		if (page.getParseData() instanceof HtmlParseData) {
 			
