@@ -1,4 +1,4 @@
-# Smart-Crawler
+# Smart Crawler
 
 This project is an easy way to visualize data crawled from internet.
 
